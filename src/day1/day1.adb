@@ -12,7 +12,7 @@ is
       procedure Next_Sum
         (File  :     Ada.Text_IO.File_Type; Sum : out Natural;
          Error : out Error_Type) with
-         Pre => Is_Open (File) and then Ada.Text_IO.Mode (File) = In_File
+         Pre  => Is_Open (File) and then Ada.Text_IO.Mode (File) = In_File
       is
          C             : Character;
          Running_Value : Natural := 0;
@@ -62,7 +62,9 @@ is
          Curr_Sum : Natural;
          Max_Sum  : Natural := 0;
 
-         Prev_Max : Natural := 0 with Ghost;
+         Prev_Max : Natural with
+            Ghost;
+
       begin
          Aoc.Open_File (File, Filename);
 
@@ -70,12 +72,14 @@ is
             Next_Sum (File, Curr_Sum, Error);
             exit when Curr_Sum = 0 or else Error /= None;
 
+            Prev_Max := Max_Sum; -- ghost
             if Curr_Sum > Max_Sum then
-               Prev_Max := Max_Sum; -- Ghost
                Max_Sum := Curr_Sum;
             end if;
 
-            pragma Loop_Invariant (Max_Sum >= Prev_Max);
+            pragma Loop_Invariant
+              (if Curr_Sum >= Prev_Max then Max_Sum = Curr_Sum
+               else Max_Sum = Prev_Max);
          end loop;
 
          if Error /= None then
