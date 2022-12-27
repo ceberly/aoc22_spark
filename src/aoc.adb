@@ -6,10 +6,4 @@ is
    begin
       Ada.Text_IO.Open (File, Ada.Text_IO.In_File, Filename);
    end Open_File;
-
-   procedure Close_File (File : in out Ada.Text_IO.File_Type)
-   is
-   begin
-      Ada.Text_IO.Close (File);
-   end Close_File;
 end Aoc;

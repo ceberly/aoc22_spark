@@ -9,10 +9,4 @@ is
       Pre    => not Is_Open (File),
       Post   => Is_Open (File) and then Ada.Text_IO.Mode (File) = In_File,
       Global => (In_Out => Ada.Text_IO.File_System);
-
-   procedure Close_File
-      (File : in out Ada.Text_IO.File_Type) with
-      Pre => Is_Open (File),
-      Post => not Is_Open (File),
-      Global => (In_Out => Ada.Text_IO.File_System);
 end Aoc;
