@@ -1,9 +1,15 @@
-package body Aoc
-   with SPARK_Mode => On
+package body Aoc with
+   SPARK_Mode => On
 is
-   procedure Open_File (File : in out Ada.Text_IO.File_Type;
-      Filename : String) is
+   procedure Open_File (File : in out Ada.Text_IO.File_Type; Filename : String)
+   is
    begin
       Ada.Text_IO.Open (File, Ada.Text_IO.In_File, Filename);
    end Open_File;
+
+   procedure Close_File (File : in out Ada.Text_IO.File_Type)
+   is
+   begin
+      Ada.Text_IO.Close (File);
+   end Close_File;
 end Aoc;

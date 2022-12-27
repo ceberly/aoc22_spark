@@ -2,6 +2,7 @@ with Ada.Text_IO; use Ada.Text_IO;
 with Ada.Characters.Latin_1;
 
 with Aoc;
+with Max_Heap;
 
 package body Day1 with
    SPARK_Mode => On
@@ -12,7 +13,7 @@ is
       procedure Next_Sum
         (File  :     Ada.Text_IO.File_Type; Sum : out Natural;
          Error : out Error_Type) with
-         Pre  => Is_Open (File) and then Ada.Text_IO.Mode (File) = In_File
+         Pre => Is_Open (File) and then Ada.Text_IO.Mode (File) = In_File
       is
          C             : Character;
          Running_Value : Natural := 0;
@@ -82,6 +83,8 @@ is
                else Max_Sum = Prev_Max);
          end loop;
 
+         Aoc.Close_File (File);
+
          if Error /= None then
             Put_Line ("day1 | part1: ERROR");
             return;
@@ -91,8 +94,41 @@ is
       end Part1;
 
       procedure Part2 is
+         File     : Ada.Text_IO.File_Type;
+         Error    : Error_Type;
+         Curr_Sum : Natural;
+         Total    : Natural := 0;
+         Element  : Natural;
+
+         --  Priority and natural element types are redundant here,
+         --  we could just use the priority, itself. However, it's helpful
+         --  for other challenges to have a generic heap...
+         package Natural_Heap is new Max_Heap (Element_Type => Natural);
+         H : Natural_Heap.Heap_Type (3_000);
       begin
-         Put_Line ("day1 | part2: " & Integer'Image (0));
+         Aoc.Open_File (File, Filename);
+
+         loop
+            Next_Sum (File, Curr_Sum, Error);
+            exit when Curr_Sum = 0 or else Error /= None;
+
+            --  see note above
+            Natural_Heap.Insert (H, Curr_Sum, Curr_Sum);
+         end loop;
+
+         Aoc.Close_File (File);
+
+         if Error /= None then
+            Put_Line ("day1 | part2: ERROR");
+            return;
+         end if;
+
+         for I in 1 .. 3 loop
+            Natural_Heap.Pop (H, Element);
+            Total := Total + Element;
+         end loop;
+
+         Put_Line ("day1 | part2: " & Integer'Image (Total));
       end Part2;
 
    begin
