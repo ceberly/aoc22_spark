@@ -6,7 +6,8 @@ is
    subtype Index_Type is Positive;
    --  Prevents overflow on Left() and Right() functions which multiply
    --  a value by 2 or 2 + 1, respectively.
-   subtype Capacity_Type is Index_Type range Index_Type'First .. Index_Type'Last / 2 - 1;
+   subtype Capacity_Type is
+     Index_Type range Index_Type'First .. Index_Type'Last / 2 - 1;
 
    type Heap_Type (Capacity : Capacity_Type) is private;
 

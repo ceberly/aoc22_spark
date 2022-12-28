@@ -85,13 +85,4 @@ is
          Heapify (Heap, 1);
       end if;
    end Pop;
-   --   function Has_Max_Heap return Boolean is
-   --     (for all K in 2 .. Max_Heap.Size =>
---        Store (Parent (K)).Key <= Store (K).Key);
---
-
---
---   function Has_Max_Heap_Property (H : Heap) return Boolean is
---      (for all K in 2 .. H.Size => H.Store (Parent (K)) >= H.Store (K));
---
 end Max_Heap;
