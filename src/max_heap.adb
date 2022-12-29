@@ -17,8 +17,17 @@ is
    function Full (Heap : Heap_Type) return Boolean is
      (Heap.Size = Heap.Capacity);
 
+   function Size_Increased_One
+     (Heap_Old : Heap_Type; Heap : Heap_Type) return Boolean is
+     (Heap.Size = Heap_Old.Size + 1);
+
+   function Size_Decreased_One
+     (Heap_Old : Heap_Type; Heap : Heap_Type) return Boolean is
+     (Heap_Old.Size = Heap.Size + 1);
+
    procedure Heapify (Heap : in out Heap_Type; Index : Index_Type) with
-      Pre => Index <= Heap.Size
+      Pre  => Index <= Heap.Size,
+      Post => Heap'Old.Size = Heap.Size
    is
       Left    : constant Index_Type := Left_Child (Index);
       Right   : constant Index_Type := Right_Child (Index);
@@ -49,6 +58,10 @@ is
       end if;
    end Heapify;
 
+   function Has_Heap_Property (Heap : Heap_Type) return Boolean is
+     (for all K in 2 .. Heap.Size =>
+        Heap.Store (Parent (K)).Key <= Heap.Store (K).Key);
+
    procedure Insert
      (Heap : in out Heap_Type; Element : Element_Type; Priority : Natural)
    is
@@ -56,6 +69,8 @@ is
       P     : Index_Type;
       T     : constant Heap_Entry := (Priority, Element);
    begin
+      pragma Assume (Has_Heap_Property (Heap));
+
       Heap.Size := Heap.Size + 1;
       Index     := Heap.Size;
 
@@ -68,6 +83,7 @@ is
          Heap.Store (Index) := Heap.Store (P);
          Index              := P;
 
+         pragma Loop_Invariant (T.Key > Heap.Store (Index).Key);
          pragma Loop_Invariant (Index <= Heap.Size);
       end loop;
 

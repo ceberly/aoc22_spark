@@ -14,14 +14,27 @@ is
    function Empty (Heap : Heap_Type) return Boolean;
    function Full (Heap : Heap_Type) return Boolean;
 
-   --  Insert an element at the given priority.
+   function Size_Increased_One
+     (Heap_Old : Heap_Type; Heap : Heap_Type) return Boolean with
+      Ghost;
+
+   function Size_Decreased_One
+     (Heap_Old : Heap_Type; Heap : Heap_Type) return Boolean with
+      Ghost;
+
+   function Has_Heap_Property (Heap : Heap_Type) return Boolean with
+      Ghost;
+
+      --  Insert an element at the given priority.
    procedure Insert
      (Heap : in out Heap_Type; Element : Element_Type; Priority : Natural) with
-      Pre => not Full (Heap);
+      Pre  => not Full (Heap),
+      Post => not Empty (Heap) and then Size_Increased_One (Heap'Old, Heap);
 
       --  Returns the highest priority element.
    procedure Pop (Heap : in out Heap_Type; Element : out Element_Type) with
-      Pre => not Empty (Heap);
+      Pre  => not Empty (Heap),
+      Post => Size_Decreased_One (Heap'Old, Heap);
 
 private
    type Heap_Entry is record
