@@ -28,8 +28,7 @@ is
    procedure Insert
      (Heap : in out Heap_Type; Element : Element_Type; Priority : Natural) with
       Pre  => not Full (Heap),
-      Post => not Empty (Heap) and then Size_Increased_One (Heap'Old, Heap)
-      and then Has_Max_Heap_Property (Heap);
+      Post => not Empty (Heap) and then Size_Increased_One (Heap'Old, Heap);
 
       --  Returns the highest priority element.
    procedure Pop (Heap : in out Heap_Type; Element : out Element_Type) with
