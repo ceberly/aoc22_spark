@@ -58,10 +58,6 @@ is
       end if;
    end Heapify;
 
-   function Has_Heap_Property (Heap : Heap_Type) return Boolean is
-     (for all K in 2 .. Heap.Size =>
-        Heap.Store (Parent (K)).Key <= Heap.Store (K).Key);
-
    procedure Insert
      (Heap : in out Heap_Type; Element : Element_Type; Priority : Natural)
    is
@@ -69,8 +65,6 @@ is
       P     : Index_Type;
       T     : constant Heap_Entry := (Priority, Element);
    begin
-      pragma Assume (Has_Heap_Property (Heap));
-
       Heap.Size := Heap.Size + 1;
       Index     := Heap.Size;
 
@@ -83,7 +77,6 @@ is
          Heap.Store (Index) := Heap.Store (P);
          Index              := P;
 
-         pragma Loop_Invariant (T.Key > Heap.Store (Index).Key);
          pragma Loop_Invariant (Index <= Heap.Size);
       end loop;
 

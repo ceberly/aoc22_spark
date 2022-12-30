@@ -9,6 +9,8 @@ is
    subtype Capacity_Type is
      Index_Type range Index_Type'First .. Index_Type'Last / 2 - 1;
 
+   subtype Heap_Size_Type is Natural range 0 .. Capacity_Type'Last;
+
    type Heap_Type (Capacity : Capacity_Type) is private;
 
    function Empty (Heap : Heap_Type) return Boolean;
@@ -22,14 +24,12 @@ is
      (Heap_Old : Heap_Type; Heap : Heap_Type) return Boolean with
       Ghost;
 
-   function Has_Heap_Property (Heap : Heap_Type) return Boolean with
-      Ghost;
-
       --  Insert an element at the given priority.
    procedure Insert
      (Heap : in out Heap_Type; Element : Element_Type; Priority : Natural) with
       Pre  => not Full (Heap),
-      Post => not Empty (Heap) and then Size_Increased_One (Heap'Old, Heap);
+      Post => not Empty (Heap) and then Size_Increased_One (Heap'Old, Heap)
+      and then Has_Max_Heap_Property (Heap);
 
       --  Returns the highest priority element.
    procedure Pop (Heap : in out Heap_Type; Element : out Element_Type) with
@@ -45,7 +45,7 @@ private
    type Heap_Array is array (Index_Type range <>) of Heap_Entry;
 
    type Heap_Type (Capacity : Capacity_Type) is record
-      Size  : Natural                    := 0;
+      Size  : Heap_Size_Type             := 0;
       Store : Heap_Array (1 .. Capacity) := (others => <>);
    end record with
       Dynamic_Predicate => Size <= Capacity;
